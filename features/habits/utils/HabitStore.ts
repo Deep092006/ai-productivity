@@ -56,7 +56,7 @@ export const useHabit = create<HabitStore>()(
         set((state) => {
           const tempHabit: Habit = {
             id: newHabit.id,
-            user_id: (newHabit as any).user_id ?? 0,
+            user_id: (newHabit as any).user_id ?? "",
             name: newHabit.name!,
             description: (newHabit as any).description ?? null,
             emoji: (newHabit as any).emoji ?? "✅",

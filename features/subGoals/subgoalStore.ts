@@ -6,7 +6,7 @@ import type { Subgoal, NewSubgoal } from "@/features/subGoals/subGoalschema";
 interface SubgoalState {
   subgoals: Subgoal[];
   setSubgoals: (newSubgoals: Subgoal[]) => void;
-  addSubgoal: (newSubgoal: NewSubgoal, user_id: number, goal_id: number, id: number) => void;
+  addSubgoal: (newSubgoal: NewSubgoal, user_id: string, goal_id: number, id: number) => void;
   updateSubgoal: (updated: Subgoal) => void;
   updateSubgoalStatus: (id: number, status: string) => void;
   deleteSubgoal: (id: number) => void;

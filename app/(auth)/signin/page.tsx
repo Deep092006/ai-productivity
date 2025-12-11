@@ -2,7 +2,7 @@
 import { auth } from "@/auth";
 import { permanentRedirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Github } from "lucide-react";
+import { Github, Mail } from "lucide-react";
 import { signIn } from "@/auth";
 
 export default async function SignIn() {
@@ -18,6 +18,12 @@ export default async function SignIn() {
   const handleGitHubSignIn = async () => {
     "use server";
     await signIn("github", { redirectTo: "/goals" });
+  };
+
+  // Sign in with Google action
+  const handleGoogleSignIn = async () => {
+    "use server";
+    await signIn("google", { redirectTo: "/goals" });
   };
 
   return (
@@ -45,6 +51,17 @@ export default async function SignIn() {
               >
                 <Github className="w-5 h-5" />
                 Continue with GitHub
+              </Button>
+            </form>
+
+            {/* Google Sign In */}
+            <form action={handleGoogleSignIn} className="mt-4">
+              <Button 
+                type="submit"
+                className="w-full bg-white hover:bg-slate-50 text-slate-900 border border-slate-200 py-6 rounded-xl flex items-center justify-center gap-3 text-lg font-medium transition-all duration-300 shadow-md hover:shadow-lg"
+              >
+                <Mail className="w-5 h-5" />
+                Continue with Google
               </Button>
             </form>
             

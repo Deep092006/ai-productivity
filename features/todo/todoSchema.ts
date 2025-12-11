@@ -16,7 +16,7 @@ export const todoTable = pgTable("todotable", {
   name: varchar("name", { length: 255 }).notNull(),
   description: varchar("description", { length: 2000 }),
 
-  user_id: integer("user_id").notNull().references(() => usersTable.id),
+  user_id: varchar("user_id").notNull().references(() => usersTable.id),
 
   isDone: boolean("is_done").default(false),
   category: varchar("category", { length: 100 }),

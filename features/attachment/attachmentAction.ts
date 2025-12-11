@@ -14,7 +14,7 @@ export const createAttachment = async (data: NewAttachment) => {
   }
 };
 
-export const getgoalAttachments = async (subgoal_id: number, user_id: number) => {
+export const getgoalAttachments = async (subgoal_id: number, user_id: string) => {
   try {
     const res = await db
       .select()
@@ -27,7 +27,7 @@ export const getgoalAttachments = async (subgoal_id: number, user_id: number) =>
   }
 };
 
-export const deleteAttachment = async (id: number, user_id: number) => {
+export const deleteAttachment = async (id: number, user_id: string) => {
   try {
     const res = await db
       .delete(attachmentTable)

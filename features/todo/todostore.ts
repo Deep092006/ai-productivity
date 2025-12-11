@@ -5,7 +5,7 @@ import type { Todo, NewTodo } from "@/features/todo/todoSchema";
 interface TodoState {
   todos: Todo[];
   setTodos: (newTodos: Todo[]) => void;
-  addTodo: (newTodo: NewTodo, user_id: number) => void;
+  addTodo: (newTodo: NewTodo, user_id: string) => void;
   updateTodo: (updatedTodo: Todo) => void;
   deleteTodo: (id: number) => void;
   deleteTodosBySubgoal: (subgoalId: number) => void;

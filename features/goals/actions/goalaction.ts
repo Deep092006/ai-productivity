@@ -5,7 +5,7 @@ import {Goal, goalTable, type NewGoal} from "@/features/goals/types/goalSchema"
 import { subgoalTable, todoTable } from "@/db/schema";
 import type { NewSubgoal, Subgoal } from "@/features/subGoals/subGoalschema";
 //get all users goal
-export const getAllUserGoals = async (user_id: number) => {
+export const getAllUserGoals = async (user_id: string) => {
   try {
     const allgoals = await db
       .select()

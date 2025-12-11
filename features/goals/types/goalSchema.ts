@@ -14,7 +14,7 @@ export const goalTable = pgTable("goaltable", {
   name: varchar("name", { length: 255 }).notNull(),
   description: varchar("description", { length: 2000 }),
 
-  user_id: integer("user_id")
+  user_id: varchar("user_id")
     .notNull()
     .references(() => usersTable.id),
   status: varchar("status").default("Not Started").notNull(),

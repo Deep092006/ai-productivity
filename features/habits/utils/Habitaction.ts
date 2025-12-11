@@ -7,7 +7,7 @@ import type { NewSubgoal, Subgoal } from "@/features/subGoals/subGoalschema";
 import type { Habit } from "@/features/habits/utils/habitSchema";
 import { format } from "path";
 //get all users goal
-export const getAllUserHabits = async (user_id: number) => {
+export const getAllUserHabits = async (user_id: string) => {
   try {
     console.log(user_id);
     const allhabits = await db

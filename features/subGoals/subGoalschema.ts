@@ -17,7 +17,7 @@ export const subgoalTable = pgTable("subgoaltable", {
 
   status: varchar("status").default("not_started").notNull(),
 
-  user_id: integer("user_id")
+  user_id: varchar("user_id")
     .notNull()
     .references(() => usersTable.id),
 

@@ -13,6 +13,8 @@ const Profile = async () => {
 
   //extract user info 
   const { name, email, image } = session.user;
+  console.log(image);
+  
 
   return (
     <div className="flex flex-col gap-4 p-4">

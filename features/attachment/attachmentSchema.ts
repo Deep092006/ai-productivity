@@ -9,7 +9,7 @@ export const attachmentTable = pgTable("attachmenttable", {
   goal_id: bigint("goal_id", { mode: "number" })
     .notNull()
     .references(() => goalTable.id),
-  user_id: bigint("user_id", { mode: "number" })
+  user_id: varchar("user_id")
     .notNull()
     .references(() => usersTable.id),
 url: varchar("url", { length: 2048 }).notNull()

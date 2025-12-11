@@ -12,7 +12,7 @@ import { usersTable } from "@/db/schema";
 // Habit table captures definition + user preferences
 export const habitTable = pgTable("habit_table", {
   id: bigint("id", { mode: "number" }).primaryKey(),
-  user_id: integer("user_id").notNull().references(() => usersTable.id),
+  user_id: varchar("user_id").notNull().references(() => usersTable.id),
 
   name: varchar("name", { length: 255 }).notNull(),
   description: varchar("description", { length: 2000 }),

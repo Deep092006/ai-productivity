@@ -42,7 +42,7 @@ import { getAllUserHabits } from "@/features/habits/utils/Habitaction";
 import HabitQuickStats from "@/features/habits/main/HabitQuickStats";
 import GenerateHabitsWithAIDialog from "@/features/habits/ai/GenerateHabitsWithAIDialog";
 
-const HabitsDashboard = ({ user_id }: { user_id: number }) => {
+const HabitsDashboard = ({ user_id }: { user_id: string }) => {
   const {
     allHabits: habits,
     setHabits,

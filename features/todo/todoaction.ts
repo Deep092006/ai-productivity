@@ -11,7 +11,7 @@ import { and, eq, getTableColumns } from "drizzle-orm";
 
 // get all todos for user
 export const getAllUserTodos = async (
-  user_id: number
+  user_id: string
 ): Promise<Todo[] | null> => {
   try {
     const allTodos = await db
@@ -36,7 +36,7 @@ export type upTodo = {
   id: number;
   name: string;
   description: string | null;
-  user_id: number;
+  user_id: string;
   isDone: boolean | null;
   category: string | null;
   priority: string | null;
@@ -47,7 +47,7 @@ export type upTodo = {
 };
 
 export const updateTodosStatus = async (
-  user_id: number,
+  user_id: string,
   todo_id: number,
   newStatus: boolean
 ): Promise<upTodo[] | null> => {
