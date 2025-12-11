@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import AllGoals from "@/features/goals/goal/allGoals";
+import AllGoals from "@/features/goals/components/list/GoalsList";
 import Loading from "@/components/Loading";
-import { useGoal } from "@/features/goals/utils/GoalStore";
+import { useGoal } from "@/features/goals/store";
 import { fetchUserGoals } from "@/features/goals/utils/fetchGoals";
 export default function GoalPage() {
   const { allGoals, setGoal } = useGoal();

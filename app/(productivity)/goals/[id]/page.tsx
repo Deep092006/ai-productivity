@@ -3,43 +3,41 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { useGoal } from "@/features/goals/utils/GoalStore";
+import { useGoal } from "@/features/goals/store";
 import { useSubgoal } from "@/features/subGoals/subgoalStore";
 import { useTodo } from "@/features/todo/todostore";
-import { getaallsubgoal, toggleGoal } from "@/features/goals/actions/goalaction";
-import type { Goal } from "@/features/goals/types/goalSchema";
+import { getaallsubgoal, toggleGoal } from "@/features/goals/actions";
+import type { Goal } from "@/features/goals/schema";
 import type { Subgoal } from "@/features/subGoals/subGoalschema";
 import { ChevronLeft, CalendarDays, Pencil, PlusCircle } from "lucide-react";
-import LoadingGoal from "@/features/goals/singlegoal/LoadingGoal";
+import LoadingGoal from "@/features/goals/components/detail/LoadingGoal";
 import NewTaskButton from "@/features/todo/components/NewTodoButton";
-import EnhancedInsightsDashboard from "@/features/goals/detail-view/analytics/InsightsDashboard";
+import EnhancedInsightsDashboard from "@/features/goals/components/analytics/InsightsDashboard";
 
 // New refined components
-import { 
-  GoalViewTabs, 
-  FocusModeToggle, 
-  MomentumTracker, 
-  TaskFilterBar 
-} from "@/features/goals/detail-view";
+import { GoalViewTabs } from "@/features/goals/components/detail/GoalViewTabs";
+import { FocusModeToggle } from "@/features/goals/components/board/FocusModeToggle";
+import { MomentumTracker } from "@/features/goals/components/overview/MomentumTracker";
+import { TaskFilterBar } from "@/features/goals/components/board/TaskFilterBar";
 import type { FocusMode, TaskFilters } from "@/features/goals/types";
 
 // Custom hooks
-import { useGoalMetrics, useTaskFiltering } from "@/features/goals/utils";
+import { useGoalMetrics, useTaskFiltering } from "@/features/goals/hooks";
 
 // Existing components
-import MilestonesSection from "@/features/goals/detail-view/overview/MilestonesSection";
-import TasksKanban from "@/features/goals/detail-view/board/TasksKanban";
-import AttachmentsSection from "@/features/goals/detail-view/activity/AttachmentsSection";
-import NotesSection from "@/features/goals/detail-view/activity/NotesSection";
-import OverallProgressCard from "@/features/goals/detail-view/overview/OverallProgressCard";
-import TeamMembersCard from "@/features/goals/detail-view/activity/TeamMembersCard";
+import MilestonesSection from "@/features/goals/components/overview/MilestonesSection";
+import TasksKanban from "@/features/goals/components/board/TasksKanban";
+import AttachmentsSection from "@/features/goals/components/activity/AttachmentsSection";
+import NotesSection from "@/features/goals/components/activity/NotesSection";
+import OverallProgressCard from "@/features/goals/components/overview/OverallProgressCard";
+import TeamMembersCard from "@/features/goals/components/activity/TeamMembersCard";
 
 // Enhanced components
-import EnhancedTimeline from "@/features/goals/detail-view/overview/EnhancedTimeline";
+import Timeline from "@/features/goals/components/overview/Timeline";
 // New: Real AI insights powered by /api/content/generate/goal
 // Smart AI insights using /api/goals/insights
-import SmartAIInsightsCard from "@/features/goals/detail-view/overview/SmartAIInsightsCard";
-import CompactAIInsights from "@/features/goals/detail-view/overview/CompactAIInsights";
+import SmartAIInsightsCard from "@/features/goals/components/overview/SmartAIInsightsCard";
+import CompactAIInsights from "@/features/goals/components/board/CompactAIInsights";
 
 // Utility formatters
 const formatDate = (date?: string | Date | null) => {
@@ -217,8 +215,8 @@ const { todos:t } = useTodo();
                       formatDate={formatDate}
                     />
                     
-                    {/* Enhanced Timeline */}
-                    <EnhancedTimeline 
+                    {/* Timeline */}
+                    <Timeline 
                       goal={singleGoal}
                       subgoals={goalSubgoals}
                       todos={goalTodos}

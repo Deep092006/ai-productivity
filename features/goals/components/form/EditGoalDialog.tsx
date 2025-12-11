@@ -14,70 +14,59 @@ import {
     Tag,
     Calendar,
     Target,
-    CheckCircle,
 } from "lucide-react";
-import { useSubgoal } from "@/features/subGoals/subgoalStore";
-import type { Subgoal } from "@/features/subGoals/subGoalschema";
-import { editGoalAction, editSubgoalAction } from "@/features/goals/actions";
-import { da } from "date-fns/locale";
+import { useGoal } from "@/features/goals/store";
+import type { Goal } from "@/features/goals/schema";
+import { editGoalAction } from "@/features/goals/actions";
 
-
-interface EditSubgoalDialogProps {
+interface EditGoalDialogProps {
     open: boolean;
-    initialData: Subgoal;
+    initialData: Goal;
     setisOpen: (open: boolean) => void;
 }
 
-export default function EditSubgoalDialog({
+export default function EditGoalDialog({
     open,
     initialData,
     setisOpen,
-}: EditSubgoalDialogProps) {
-    const { editSubgoal } = useSubgoal();
+}: EditGoalDialogProps) {
+    const { editGoal } = useGoal();
 
     const {
         register,
         handleSubmit,
         control,
         formState: { errors },
-    } = useForm<Subgoal>({
+    } = useForm<Goal>({
         defaultValues: initialData,
     });
 
- const handleUpdate = (data: Subgoal) => {
-  const fixedData: Subgoal = {
-    ...data,
-    isdone: data.isdone === true,
-    endDate: data.endDate ? new Date(data.endDate) : null, // ✅ keep as Date
-  };
-
-  console.log("Sending data:", fixedData);
-
-  editSubgoal(fixedData);
-  setisOpen(false);
-  editSubgoalAction(fixedData);
-};
-
-
+    const handleUpdate = (data: Goal) => {
+        editGoal(data);
+        setisOpen(false);
+            editGoalAction({
+        ...data,
+    });
+    };
 
     return (
         <BaseDialog
             isOpen={open}
             setisOpen={setisOpen}
-            title="Edit Subgoal"
-            description="Update your subgoal details"
+            title="Edit Goal"
+            description="Update your goal details"
         >
             <form onSubmit={handleSubmit(handleUpdate)} className="space-y-4 mt-4">
                 {/* Name */}
                 <div className="space-y-2">
                     <Label htmlFor="name" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
                         <Sparkles className="w-4 h-4 text-blue-500" />
-                        Subgoal Name *
+                        Goal Name *
                     </Label>
                     <Input
                         id="name"
                         placeholder="What needs to be done?"
-                        {...register("name", { required: "Subgoal name is required" })}
+                        {...register("name", { required: "Task name is required" })}
                     />
                     {errors.name && (
                         <p className="text-sm text-red-500">{errors.name.message}</p>
@@ -97,33 +86,17 @@ export default function EditSubgoalDialog({
                     />
                 </div>
 
-                {/* Status */}
+                {/* Category */}
                 <div className="space-y-2 w-full">
-                    <Label htmlFor="status" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                    <Label htmlFor="category" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
                         <Tag className="w-4 h-4 text-purple-500" />
-                        Status
+                        Category
                     </Label>
-                    <SelectField<Subgoal>
-                        name="status"
+                    <SelectField<Goal>
+                        name="category"
                         control={control}
-                        options={["not_started", "in_progress", "completed"]}
+                        options={["Personal", "Goal", "Tech"]}
                     />
-                </div>
-
-                {/* Is Done */}
-                <div className="space-y-2">
-                    <Label htmlFor="isdone" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
-                        Done
-                    </Label>
-                    <select
-                        id="isdone"
-                        {...register("isdone")}
-                        className="border rounded px-2 py-1"
-                    >
-                        <option value="false">No</option>
-                        <option value="true">Yes</option>
-                    </select>
                 </div>
 
                 {/* End Date */}
@@ -132,7 +105,7 @@ export default function EditSubgoalDialog({
                         <Calendar className="w-4 h-4 text-green-500" />
                         End Date
                     </Label>
-                    <DateField<Subgoal> name="endDate" control={control} />
+                    <DateField<Goal> name="endDate" control={control} />
                 </div>
 
                 {/* Submit Button */}
