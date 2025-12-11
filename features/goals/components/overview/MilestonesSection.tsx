@@ -1,13 +1,13 @@
 "use client";
 import { useState } from "react";
 import MilestoneAccordionItem from "./MilestoneAccordionItem";
-import type { Subgoal } from "@/features/subGoals/subGoalschema";
-import type { Todo } from "@/features/todo/todoSchema";
-import { useTodo } from "@/features/todo/todostore";
+import type { Subgoal } from "@/features/subGoals/schema";
+import type { Todo } from "@/features/todo/schema";
+import { useTodo } from "@/features/todo/store";
 import { Flag, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import GenerateSubgoalWithAIDialog from "@/features/subGoals/components/GenerateSubgoalWithAIDialog";
-import NewSubGoalDialog from "@/features/subGoals/components/Newsubgoal";
+import GenerateSubgoalWithAIDialog from "@/features/subGoals/components/form/GenerateSubgoalWithAIDialog";
+import NewSubGoalDialog from "@/features/subGoals/components/form/NewSubgoal";
 
 interface MilestonesSectionProps {
   subgoals: Subgoal[];

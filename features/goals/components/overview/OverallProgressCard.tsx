@@ -1,5 +1,5 @@
 "use client";
-import { useSubgoal } from "@/features/subGoals/subgoalStore";
+import { useSubgoal } from "@/features/subGoals/store";
 import ProgressBar from "../shared/ProgressBar";
 
 interface OverallProgressCardProps {

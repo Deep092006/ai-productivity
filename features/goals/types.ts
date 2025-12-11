@@ -1,6 +1,9 @@
-// Goal Detail View Types
+// 🎯 Goal Detail View Types
+
+// 🔍 Focus mode options
 export type FocusMode = "all" | "today" | "urgent" | "active";
 
+// 📊 Focus counts interface
 export interface FocusCounts {
   all: number;
   today: number;
@@ -8,12 +11,14 @@ export interface FocusCounts {
   active: number;
 }
 
+// 🔧 Task filtering options
 export interface TaskFilters {
   subgoalIds: number[];
   priorities: string[];
   deadlineRange: "all" | "today" | "week" | "overdue";
 }
 
+// 📈 Momentum tracking metrics
 export interface MomentumMetrics {
   streak: number;
   tasksCompletedToday: number;
@@ -22,6 +27,7 @@ export interface MomentumMetrics {
   recentWins: string[];
 }
 
+// 📊 Analytics metrics interface
 export interface AnalyticsMetrics {
   completedTasks: number;
   totalTasks: number;
@@ -30,6 +36,7 @@ export interface AnalyticsMetrics {
   completedThisWeek: number;
 }
 
+// 🤖 AI insight response structure
 export interface AIInsightResponse {
   completionProbability: number;
   estimatedCompletionDate: string;

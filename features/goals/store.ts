@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Goal, NewGoal } from "@/features/goals/schema";
 
-// Define the store type
+// 📦 Goal store type definition
 export type GoalStore = {
   allGoals: Goal[];
   setGoal: (newGoals: Goal[]) => void;
@@ -14,13 +14,17 @@ export type GoalStore = {
   editGoal: (updatedGoal: Goal) => void;
 };
 
+// 🗂 Global goal store with persistence
 export const useGoal = create<GoalStore>()(
   persist(
     (set, get) => ({
+      // 📊 Initial state
       allGoals: [],
 
+      // 📝 Set all goals
       setGoal: (newGoals) => set({ allGoals: newGoals }),
 
+      // ➕ Add new goal
       addGoal: (newGoal) =>
         set((state) => {
           const tempGoal: Goal = {
@@ -35,15 +39,19 @@ export const useGoal = create<GoalStore>()(
           };
         }),
 
+      // 🗑️ Delete goal by ID
       deleteGoal: (id) =>
         set((state) => ({
           allGoals: state.allGoals.filter((goal) => goal.id !== id),
         })),
 
+      // 🧹 Clear all goals
       clearGoals: () => set({ allGoals: [] }),
 
+      // 🔍 Get goal by index
       getGoalByIndex: (index) => get().allGoals[index],
 
+      // 🔄 Update goal status
       updateGoalStatus: (goalId, status) =>
         set((state) => ({
           allGoals: state.allGoals.map((goal) =>
@@ -51,6 +59,7 @@ export const useGoal = create<GoalStore>()(
           ),
         })),
 
+      // ✏️ Edit existing goal
       editGoal: (updatedGoal) =>
         set((state) => ({
           allGoals: state.allGoals.map((goal) =>

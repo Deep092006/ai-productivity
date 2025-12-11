@@ -1,9 +1,14 @@
-import HabitsDashboard from '@/features/habits/main/HabitsDashboard'
+import HabitsDashboard from '@/features/habits/components/list/HabitsDashboard'
 import { getuser } from '@/lib/actions/getuser'
 
 const HabitsPage = async () => {
+  // 👤 Get user ID from session
   const userId = await getuser()
-  return <HabitsDashboard user_id={userId ?? ""} />
+  
+  return (
+    // 📊 Render habits dashboard
+    <HabitsDashboard user_id={userId ?? ""} />
+  )
 }
 
 export default HabitsPage

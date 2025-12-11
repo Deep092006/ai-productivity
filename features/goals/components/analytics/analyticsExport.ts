@@ -1,8 +1,8 @@
 "use client";
 
 import type { Goal } from "@/features/goals/schema";
-import type { Subgoal } from "@/features/subGoals/subGoalschema";
-import type { Todo } from "@/features/todo/todoSchema";
+import type { Subgoal } from "@/features/subGoals/schema";
+import type { Todo } from "@/features/todo/schema";
 
 interface AnalyticsExportData {
   timestamp: string;

@@ -7,8 +7,8 @@ import GoalTemplateLibrary from "@/features/goals/components/form/GoalTemplateLi
 import { Button } from "@/components/ui/button";
 import BaseDialog from "@/components/BaseDialog";
 import { useGoal } from "@/features/goals/store";
-import { useSubgoal } from "@/features/subGoals/subgoalStore";
-import { useTodo } from "@/features/todo/todostore";
+import { useSubgoal } from "@/features/subGoals/store";
+import { useTodo } from "@/features/todo/store";
 
 const GoalHeader = () => {
   const [isTemplateLibraryOpen, setIsTemplateLibraryOpen] = useState(false);

@@ -1,9 +1,9 @@
 "use server"
-import { and, eq, getTableColumns, inArray } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import {Goal, goalTable, type NewGoal} from "@/features/goals/schema"
-import { subgoalTable, todoTable } from "@/db/schema";
-import type { NewSubgoal, Subgoal } from "@/features/subGoals/subGoalschema";
+import { subgoalTable } from "@/db/schema";
+import type { NewSubgoal, Subgoal } from "@/features/subGoals/schema";
 //get all users goal
 export const getAllUserGoals = async (user_id: string) => {
   try {
@@ -66,27 +66,7 @@ export const newSubGoalsAction = async(NewSubgoal: NewSubgoal) => {
 
 export const DeleteGoalsAction = async (id: number) => {
   try {
-    // 1. Find all subgoal IDs for this goal
-    const subgoals = await db
-      .select({ id: subgoalTable.id })
-      .from(subgoalTable)
-      .where(eq(subgoalTable.goal_id, id));
-
-    const subgoalIds = subgoals.map(sg => sg.id);
-
-    if (subgoalIds.length > 0) {
-      // 2. Delete all todos linked to these subgoals
-      await db
-        .delete(todoTable)
-        .where(inArray(todoTable.subgoal_id, subgoalIds));
-
-      // 3. Delete all subgoals for this goal
-      await db
-        .delete(subgoalTable)
-        .where(eq(subgoalTable.goal_id, id));
-    }
-
-    // 4. Delete the goal
+    // Delete the goal - subgoals and todos will be cascade deleted automatically
     const deletedGoal = await db
       .delete(goalTable)
       .where(eq(goalTable.id, id))
@@ -132,27 +112,15 @@ export const toggleSubgoal = async (subgoalId: number, status: string) => {
 //delete subgoal
 export const DeleteSubGoalsAction = async (id: number) => {
   try {
-    // 1. First, delete all todos linked to this subgoal
-    const deletedTodos = await db
-      .delete(todoTable)
-      .where(eq(todoTable.subgoal_id, id))
-      .returning();
-
-    console.log(`Deleted ${deletedTodos.length} todos associated with subgoal ${id}`);
-
-    // 2. Then delete the subgoal
+    // Delete the subgoal - todos will be cascade deleted automatically
     const deletedSubgoal = await db
       .delete(subgoalTable)
       .where(eq(subgoalTable.id, id))
       .returning();
 
-    return {
-      deletedSubgoal,
-      deletedTodos,
-      todoCount: deletedTodos.length
-    };
+    return deletedSubgoal;
   } catch (error) {
-    console.error("Error deleting subgoal and associated todos:", error);
+    console.error("Error deleting subgoal:", error);
     throw error;
   }
 };
@@ -192,27 +160,7 @@ export const EditGoalsAction = async (id: number, updatedGoal: NewGoal) => {
 //delete goal
 export const deleteGoal = async (id: number) => {
   try {
-    // 1. Find all subgoal IDs for this goal
-    const subgoals = await db
-      .select({ id: subgoalTable.id })
-      .from(subgoalTable)
-      .where(eq(subgoalTable.goal_id, id));
-
-    const subgoalIds = subgoals.map(sg => sg.id);
-
-    if (subgoalIds.length > 0) {
-      // 2. Delete all todos linked to these subgoals
-      await db
-        .delete(todoTable)
-        .where(inArray(todoTable.subgoal_id, subgoalIds));
-
-      // 3. Delete all subgoals for this goal
-      await db
-        .delete(subgoalTable)
-        .where(eq(subgoalTable.goal_id, id));
-    }
-
-    // 4. Delete the goal
+    // Delete the goal - subgoals and todos will be cascade deleted automatically
     const deletedGoal = await db
       .delete(goalTable)
       .where(eq(goalTable.id, id))

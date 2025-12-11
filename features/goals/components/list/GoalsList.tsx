@@ -10,12 +10,14 @@ import GoalGrid from "@/features/goals/components/list/GoalGrid";
 const GoalsList = ({ goals }: { goals: Goal[] }) => {
   const { allGoals, setGoal } = useGoal();
 
+  // Sync server goals to store
   useEffect(() => {
     if (goals && goals.length > 0) {
       setGoal(goals);
     }
   }, [goals, setGoal]);
 
+  // Calculate stats
   const completedGoals = allGoals.filter(
     (goal) => goal.status == "Completed"
   ).length;
@@ -23,21 +25,18 @@ const GoalsList = ({ goals }: { goals: Goal[] }) => {
 
   return (
     <div className="space-y-6">
-      {/* Header Section */}
+      {/* 📋 Header */}
       <GoalHeader />
 
-      {/* Main Content Area */}
+      {/* 🎯 Goals Content */}
       {allGoals.length === 0 ? (
         <GoalEmptyState />
       ) : (
         <div className="space-y-6">
-          {/* Quick Stats */}
           <GoalQuickStats
             totalGoals={totalGoals}
             completedGoals={completedGoals}
           />
-
-          {/* Goals Grid */}
           <GoalGrid goals={allGoals} />
         </div>
       )}

@@ -1,4 +1,3 @@
-// app/(root)/signin/page.tsx
 import { auth } from "@/auth";
 import { permanentRedirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -6,21 +5,21 @@ import { Github, Mail } from "lucide-react";
 import { signIn } from "@/auth";
 
 export default async function SignIn() {
-  // Check if user session exists
+  // 🔐 Check if user session exists
   const session = await auth();
 
-  // If session exists → redirect to todos
+  // ↩️ If session exists → redirect to todos
   if (session?.user) {
     permanentRedirect("./todos");
   }
 
-  // Sign in with GitHub action
+  // 🐙 Sign in with GitHub action
   const handleGitHubSignIn = async () => {
     "use server";
     await signIn("github", { redirectTo: "/goals" });
   };
 
-  // Sign in with Google action
+  // 📧 Sign in with Google action
   const handleGoogleSignIn = async () => {
     "use server";
     await signIn("google", { redirectTo: "/goals" });
@@ -30,20 +29,20 @@ export default async function SignIn() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200">
-          {/* Header */}
+          {/* 🎨 Header */}
           <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center">
             <h1 className="text-3xl font-bold text-white">Welcome Back</h1>
             <p className="text-blue-100 mt-2">Sign in to continue your journey</p>
           </div>
           
-          {/* Content */}
+          {/* 📝 Content */}
           <div className="p-8">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-slate-800">Sign In</h2>
               <p className="text-slate-600 mt-2">Choose your preferred method</p>
             </div>
             
-            {/* GitHub Sign In */}
+            {/* 🐙 GitHub Sign In */}
             <form action={handleGitHubSignIn}>
               <Button 
                 type="submit"
@@ -54,7 +53,7 @@ export default async function SignIn() {
               </Button>
             </form>
 
-            {/* Google Sign In */}
+            {/* 📧 Google Sign In */}
             <form action={handleGoogleSignIn} className="mt-4">
               <Button 
                 type="submit"

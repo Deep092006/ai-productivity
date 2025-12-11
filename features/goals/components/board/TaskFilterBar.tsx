@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Subgoal } from "@/features/subGoals/subGoalschema";
+import type { Subgoal } from "@/features/subGoals/schema";
 
 export type TaskFilters = {
   subgoalIds: number[];

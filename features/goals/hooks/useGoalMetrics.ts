@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
-import type { Todo } from '@/features/todo/todoSchema';
+import type { Todo } from '@/features/todo/schema';
 import type { MomentumMetrics, AnalyticsMetrics, FocusCounts } from '../types';
 
+// 🎣 Custom hook to compute goal metrics
 export const useGoalMetrics = (goalTodos: Todo[], goalId: number) => {
-  // Compute momentum metrics
+  // 📈 Compute momentum metrics
   const momentumMetrics = useMemo((): MomentumMetrics => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -32,7 +33,7 @@ export const useGoalMetrics = (goalTodos: Todo[], goalId: number) => {
     };
   }, [goalTodos]);
 
-  // Focus mode counts
+  // 🔍 Focus mode counts
   const focusCounts = useMemo((): FocusCounts => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -50,7 +51,7 @@ export const useGoalMetrics = (goalTodos: Todo[], goalId: number) => {
     };
   }, [goalTodos]);
 
-  // Analytics metrics
+  // 📊 Analytics metrics
   const analyticsMetrics = useMemo((): AnalyticsMetrics => {
     const completed = goalTodos.filter((t) => t.isDone).length;
     const total = goalTodos.length;
@@ -67,7 +68,7 @@ export const useGoalMetrics = (goalTodos: Todo[], goalId: number) => {
       (t) => t.isDone && t.endDate && new Date(t.endDate) >= weekAgo
     ).length;
 
-    // Compute weekly velocity
+    // 📈 Compute weekly velocity
     const weeklyVelocity = computeWeeklyVelocity(goalTodos, goalId);
 
     return {

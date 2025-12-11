@@ -1,8 +1,9 @@
 import type { Goal } from "@/features/goals/types";
-import type { Subgoal } from "@/features/subGoals/subGoalschema";
-import type { Todo } from "@/features/todo/todoSchema";
+import type { Subgoal } from "@/features/subGoals/schema";
+import type { Todo } from "@/features/todo/schema";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 
+// 🤖 Initialize AI model
 function initModel() {
   const apiKey = process.env.GOOGLE_API_KEY;
   if (!apiKey) throw new Error("❌ GOOGLE_API_KEY is missing in .env");
@@ -36,6 +37,7 @@ interface AIResponseShape {
   }>;
 }
 
+// 📝 Extract text content from AI response
 function extractContent(response: unknown): string {
   if (!response || typeof response !== "object") return "";
   if ("content" in response) {
@@ -46,8 +48,10 @@ function extractContent(response: unknown): string {
   return "";
 }
 
+// 📤 POST - Generate AI insights for a goal
 export async function POST(req: Request) {
   try {
+    // 📥 Parse request body
     const body = await req.json();
     const { goal, subgoals, todos } = body as {
       goal: Goal;
@@ -55,10 +59,12 @@ export async function POST(req: Request) {
       todos: Todo[];
     };
 
+    // ✅ Validate input
     if (!goal || typeof goal !== "object") {
       return Response.json({ error: "Missing goal" }, { status: 400 });
     }
 
+    // 🤖 Initialize AI model
     const model = initModel();
 
     const systemPrompt = `You are an expert productivity coach and data analyst. Analyze the goal data and return ONLY JSON with this exact schema:

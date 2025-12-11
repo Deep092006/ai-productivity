@@ -5,7 +5,7 @@ import { categoryStyles } from '@/features/goals/constants';
 import { DeleteGoalsAction } from '@/features/goals/actions';
 import type { Goal } from '@/features/goals/schema';
 import { useGoal } from '@/features/goals/store';
-import { useSubgoal } from '@/features/subGoals/subgoalStore';
+import { useSubgoal } from '@/features/subGoals/store';
 import { Calendar, Clock, Trash2, TrendingUp, AlertCircle, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';

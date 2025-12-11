@@ -1,10 +1,10 @@
 "use client";
 import { useState, useCallback } from "react";
-import type { Todo } from "@/features/todo/todoSchema";
+import type { Todo } from "@/features/todo/schema";
 import { FileText, GripVertical, Loader2 } from "lucide-react";
-import { useTodo } from "@/features/todo/todostore";
+import { useTodo } from "@/features/todo/store";
 import useUser from "@/store/useUser";
-import { updateTodosStatus, updatetodoData } from "@/features/todo/todoaction";
+import { updateTodosStatus, updatetodoData } from "@/features/todo/actions";
 import { cn } from "@/lib/utils";
 
 type ColumnKey = "backlog" | "inProgress" | "done";

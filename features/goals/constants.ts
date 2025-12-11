@@ -1,3 +1,4 @@
+// 🎨 Category styling configuration
  export const categoryStyles: Record<string, { bg: string; text: string; icon: string; cardBg: string; emoji: string; gradient: string }> = {
     Health: { 
       bg: 'bg-gradient-to-r from-emerald-50 to-green-50 border-emerald-200', 

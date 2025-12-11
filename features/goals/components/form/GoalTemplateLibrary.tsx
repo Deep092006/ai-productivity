@@ -20,15 +20,15 @@ import {
   CheckCircle2
 } from "lucide-react";
 import { useGoal } from "@/features/goals/store";
-import { useSubgoal } from "@/features/subGoals/subgoalStore";
-import { useTodo } from "@/features/todo/todostore";
+import { useSubgoal } from "@/features/subGoals/store";
+import { useTodo } from "@/features/todo/store";
 import { newGoalsAction, newSubGoalsAction } from "@/features/goals/actions";
-import { newtodoaction } from "@/features/todo/todoaction";
+import { newtodoaction } from "@/features/todo/actions";
 import { generateUniqueId } from "@/lib/generateUniqueId";
 import useUser from "@/store/useUser";
 import type { NewGoal } from "@/features/goals/schema";
-import type { NewSubgoal } from "@/features/subGoals/subGoalschema";
-import type { NewTodo } from "@/features/todo/todoSchema";
+import type { NewSubgoal } from "@/features/subGoals/schema";
+import type { NewTodo } from "@/features/todo/schema";
 
 interface GoalTemplate {
   id: string;

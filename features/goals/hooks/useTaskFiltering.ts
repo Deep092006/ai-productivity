@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { Todo } from '@/features/todo/todoSchema';
+import type { Todo } from '@/features/todo/schema';
 import type { TaskFilters } from '../types';
 
 export const useTaskFiltering = (

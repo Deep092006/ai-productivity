@@ -6,15 +6,16 @@ import { UploadButton } from "@/features/auth/uploadthing";
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-red-500">
+      {/* 📤 Upload button component */}
       <UploadButton
         endpoint="imageUploader"
         onClientUploadComplete={(res) => {
-          // Do something with the response
+          // ✅ Handle upload success
           console.log("Files: ", res);
           alert("Upload Completed");
         }}
         onUploadError={(error: Error) => {
-          // Do something with the error.
+          // ⚠️ Handle upload error
           alert(`ERROR! ${error.message}`);
         }}
       />

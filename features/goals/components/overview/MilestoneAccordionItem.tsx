@@ -10,21 +10,21 @@ import {
   Pencil,
   Trash2,
 } from "lucide-react";
-import type { Subgoal } from "@/features/subGoals/subGoalschema";
-import type { Todo } from "@/features/todo/todoSchema";
+import type { Subgoal } from "@/features/subGoals/schema";
+import type { Todo } from "@/features/todo/schema";
 import ProgressBar from "../shared/ProgressBar";
-import { useTodo } from "@/features/todo/todostore";
+import { useTodo } from "@/features/todo/store";
 import {
   deleteTodoFromdb,
   updateTodosStatus,
-} from "@/features/todo/todoaction";
+} from "@/features/todo/actions";
 import useUser from "@/store/useUser";
-import NewTodoDialog from "@/features/todo/components/NewTodo";
-import EditSubgoalDialog from "@/features/subGoals/components/EditSubgoalDialog";
-import EditTodoDialog from "@/features/todo/components/EditTodoDialog";
-import { useSubgoal } from "@/features/subGoals/subgoalStore";
+import NewTodoDialog from "@/features/todo/components/form/NewTodo";
+import EditSubgoalDialog from "@/features/subGoals/components/form/EditSubgoalDialog";
+import EditTodoDialog from "@/features/todo/components/form/EditTodoDialog";
+import { useSubgoal } from "@/features/subGoals/store";
 import { DeleteSubGoalsAction } from "@/features/goals/actions";
-import GenerateTasksWithAIDialog from "@/features/todo/components/GenerateTasksWithAIDialog";
+import GenerateTasksWithAIDialog from "@/features/todo/components/form/GenerateTasksWithAIDialog";
 
 interface MilestoneAccordionItemProps {
   subgoal: Subgoal;
@@ -88,9 +88,7 @@ const MilestoneAccordionItem = ({
       // 2. Delete from database (cascade deletion)
       const result = await DeleteSubGoalsAction(subgoal.id);
       
-      if (result) {
-        console.log(`Successfully deleted milestone "${subgoal.name}" and ${result.todoCount} associated tasks`);
-      }
+     
     } catch (error) {
       console.error("Failed to delete milestone:", error);
       // TODO: Add proper error handling/toast notification

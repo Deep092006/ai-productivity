@@ -4,27 +4,27 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useGoal } from "@/features/goals/store";
-import { useSubgoal } from "@/features/subGoals/subgoalStore";
-import { useTodo } from "@/features/todo/todostore";
+import { useSubgoal } from "@/features/subGoals/store";
+import { useTodo } from "@/features/todo/store";
 import { getaallsubgoal, toggleGoal } from "@/features/goals/actions";
 import type { Goal } from "@/features/goals/schema";
-import type { Subgoal } from "@/features/subGoals/subGoalschema";
+import type { Subgoal } from "@/features/subGoals/schema";
 import { ChevronLeft, CalendarDays, Pencil, PlusCircle } from "lucide-react";
 import LoadingGoal from "@/features/goals/components/detail/LoadingGoal";
-import NewTaskButton from "@/features/todo/components/NewTodoButton";
+import NewTaskButton from "@/features/todo/components/form/NewTodoButton";
 import EnhancedInsightsDashboard from "@/features/goals/components/analytics/InsightsDashboard";
 
-// New refined components
+// 📦 New refined components
 import { GoalViewTabs } from "@/features/goals/components/detail/GoalViewTabs";
 import { FocusModeToggle } from "@/features/goals/components/board/FocusModeToggle";
 import { MomentumTracker } from "@/features/goals/components/overview/MomentumTracker";
 import { TaskFilterBar } from "@/features/goals/components/board/TaskFilterBar";
 import type { FocusMode, TaskFilters } from "@/features/goals/types";
 
-// Custom hooks
+// 🎣 Custom hooks
 import { useGoalMetrics, useTaskFiltering } from "@/features/goals/hooks";
 
-// Existing components
+// 📦 Existing components
 import MilestonesSection from "@/features/goals/components/overview/MilestonesSection";
 import TasksKanban from "@/features/goals/components/board/TasksKanban";
 import AttachmentsSection from "@/features/goals/components/activity/AttachmentsSection";
@@ -32,14 +32,14 @@ import NotesSection from "@/features/goals/components/activity/NotesSection";
 import OverallProgressCard from "@/features/goals/components/overview/OverallProgressCard";
 import TeamMembersCard from "@/features/goals/components/activity/TeamMembersCard";
 
-// Enhanced components
+// ✨ Enhanced components
 import Timeline from "@/features/goals/components/overview/Timeline";
-// New: Real AI insights powered by /api/content/generate/goal
-// Smart AI insights using /api/goals/insights
+// 🤖 Real AI insights powered by /api/content/generate/goal
+// 🧠 Smart AI insights using /api/goals/insights
 import SmartAIInsightsCard from "@/features/goals/components/overview/SmartAIInsightsCard";
 import CompactAIInsights from "@/features/goals/components/board/CompactAIInsights";
 
-// Utility formatters
+// 🛠 Utility formatters
 const formatDate = (date?: string | Date | null) => {
   if (!date) return "—";
   try {
@@ -59,25 +59,31 @@ const subgoalStatusValue = (status: string) => {
 };
 
 const GoalDetailPage = () => {
+  // 🔍 Get goal ID from URL params
   const params = useParams();
   const goalId = Number(params?.id);
+  
+  // 🗂 Global stores
   const { allGoals, updateGoalStatus } = useGoal();
   const { subgoals, setSubgoals } = useSubgoal();
   const [singleGoal, setSingleGoal] = useState<Goal | null>(null);
 
+  // 📝 Notes state
   const [notes] = useState(() => [
     { id: 1, user: "System", text: "Goal viewed", ago: "just now" },
   ]);
 
+  // 🎯 Compute goal subgoals
   const goalSubgoals = useMemo(
     () => subgoals.filter((sg): sg is Subgoal => sg.goal_id === goalId).map((sg) => ({ ...sg, description: sg.description || "" })),
     [subgoals, goalId]
   );
-const { todos:t } = useTodo();
-
+  
+  // ✅ Get todos for this goal
+  const { todos:t } = useTodo();
   const goalTodos = t.filter((td) => td.goal_id == goalId);
 
-  // New state management
+  // 🎨 UI state management
   const [focusMode, setFocusMode] = useState<FocusMode>("all");
   const [taskFilters, setTaskFilters] = useState<TaskFilters>({
     subgoalIds: [],
@@ -85,7 +91,7 @@ const { todos:t } = useTodo();
     deadlineRange: "all",
   });
 
-  // Use custom hooks for better organization
+  // 📊 Use custom hooks for better organization
   const { momentumMetrics, focusCounts } = useGoalMetrics(goalTodos, goalId);
   const { filteredTasks, filteredBacklog, filteredInProgress, filteredDone } = useTaskFiltering(
     goalTodos, 
@@ -93,6 +99,7 @@ const { todos:t } = useTodo();
     taskFilters
   );
 
+  // 📊 Calculate subgoal progress
   const subgoalProgress = goalSubgoals.map((sg) => {
     const sgTodos = goalTodos.filter((t) => t.subgoal_id === sg.id);
     const done = sgTodos.filter((t) => t.isDone).length;
@@ -105,6 +112,7 @@ const { todos:t } = useTodo();
   const totalMilestones = goalSubgoals.length;
   const overallProgress = totalMilestones > 0 ? Math.round((subgoalProgress.reduce((a, b) => a + b.percent, 0) / (100 * totalMilestones)) * 100) : 0;
 
+  // 🔄 Fetch goal and subgoals on mount
   useEffect(() => {
     const currentGoal = allGoals.find((g) => g.id === goalId) || null;
     setSingleGoal(currentGoal);
@@ -113,6 +121,7 @@ const { todos:t } = useTodo();
     }
   }, [allGoals, goalId, subgoals.length, setSubgoals]);
 
+  // 🔄 Auto-update goal status based on progress
   useEffect(() => {
     if (!singleGoal) return;
     let newStatus: Goal["status"];
@@ -126,6 +135,7 @@ const { todos:t } = useTodo();
     }
   }, [totalMilestones, completedCount, singleGoal, goalId, updateGoalStatus]);
 
+  // 📅 Calculate schedule insights
   const endDate = singleGoal?.endDate ? new Date(singleGoal.endDate) : null;
   const today = new Date();
   const scheduleInsight: { alert?: string; estimate?: string } = {};
@@ -138,13 +148,14 @@ const { todos:t } = useTodo();
     scheduleInsight.estimate = `Estimated completion ${(overallProgress >= 100 ? "Completed" : endDate.toLocaleDateString())}`;
   }
 
+  // ⏳ Loading state
   if (!singleGoal) return <LoadingGoal />;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
       <div className="container mx-auto px-4 lg:px-6 py-6 lg:py-8 max-w-7xl">
         <div className="space-y-6 lg:space-y-8">
-          {/* Header Section */}
+          {/* 🎯 Header Section */}
           <div className="bg-white/80 backdrop-blur-sm p-6 lg:p-8 rounded-2xl shadow-sm border border-gray-200/80 hover:shadow-md transition-all duration-300">
             <div className="flex flex-col xl:flex-row xl:items-start justify-between gap-6">
               <div className="flex items-start gap-4 flex-1">

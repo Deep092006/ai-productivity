@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { motion } from "motion/react";
 
+// 📍 Navigation items configuration
 const navItems = [
   { label: "Dashboard", icon: Home, href: "/dashboard" },
   { label: "Tasks", icon: CheckSquare, href: "/todos" },
@@ -37,12 +38,13 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // 🎨 UI state
   const [collapsed, setCollapsed] = useState(true);
   const pathname = usePathname();
 
   return (
     <div className="flex h-screen bg-slate-50">
-      {/* Sidebar */}
+      {/* 📱 Sidebar */}
       <motion.aside
         initial={false}
         animate={{ width: collapsed ? 80 : 288 }}
@@ -52,7 +54,7 @@ export default function DashboardLayout({
         )}
         style={{ width: collapsed ? 80 : 288 }}
       >
-        {/* Header */}
+        {/* 🎯 Header */}
         <div className="flex items-center justify-between p-4 border-b border-slate-200">
           {!collapsed && (
             <div className="flex items-center space-x-3">
@@ -85,7 +87,7 @@ export default function DashboardLayout({
           </Button>}
         </div>
 
-        {/* Navigation */}
+        {/* 🧭 Navigation */}
         <nav className="flex-1 px-3 py-6 space-y-2 overflow-y-auto">
           {navItems.map(({ label, icon: Icon, href }) => {
             const isActive = pathname === href;
@@ -116,7 +118,7 @@ export default function DashboardLayout({
 
         <Separator className="mx-3 my-2" />
 
-        {/* Settings & Profile */}
+        {/* ⚙️ Settings & Profile */}
         <div className="p-3 space-y-2">
           <Link
             href="/settings"
@@ -160,7 +162,7 @@ export default function DashboardLayout({
         </div>
       </motion.aside>
 
-      {/* Main Content */}
+      {/* 📄 Main Content */}
       <main className="flex-1 overflow-auto bg-gradient-to-br from-slate-50 via-white to-slate-50 p-6">
         {children}
       </main>
