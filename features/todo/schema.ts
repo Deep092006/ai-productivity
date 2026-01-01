@@ -5,7 +5,8 @@ import {
   boolean,
   timestamp,
   json,
-  bigint
+  bigint,
+  text
 } from "drizzle-orm/pg-core";
 import { goalTable, usersTable } from "@/db/schema";
 import { subgoalTable } from "@/features/subGoals/schema";
@@ -14,13 +15,14 @@ import { subgoalTable } from "@/features/subGoals/schema";
 export const todoTable = pgTable("todotable", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   name: varchar("name", { length: 255 }).notNull(),
-  description: varchar("description", { length: 2000 }),
+  description: text("description"),
 
   user_id: varchar("user_id").notNull().references(() => usersTable.id, { onDelete: "cascade" }),
 
   isDone: boolean("is_done").default(false),
   category: varchar("category", { length: 100 }),
   priority: varchar("priority", { length: 100 }),
+  tags: text("tags").array(),
   startDate: timestamp("start_date", { mode: "date" }),
   endDate: timestamp("end_date", { mode: "date" }),
 

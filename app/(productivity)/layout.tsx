@@ -16,11 +16,13 @@ import {
   ChevronLeft,
   ChevronRight,
   Brain,
-  Calendar,
   BarChart3,
   User,
+  FileText,
+  MessageSquare,
 } from "lucide-react";
 import { motion } from "motion/react";
+import AIAgentFloatingButton from "@/features/ai-agent/components/AIAgentFloatingButton";
 
 // 📍 Navigation items configuration
 const navItems = [
@@ -30,7 +32,8 @@ const navItems = [
   { label: "Goals", icon: Target, href: "/goals" },
   { label: "Projects", icon: FolderKanban, href: "/projects" },
   { label: "Habits", icon: BarChart3, href: "/habits" },
-  { label: "Calendar", icon: Calendar, href: "/calendar" },
+  { label: "Notes", icon: FileText, href: "/notes" },
+  { label: "Chat", icon: MessageSquare, href: "/chat" },
 ];
 
 export default function DashboardLayout({
@@ -163,9 +166,12 @@ export default function DashboardLayout({
       </motion.aside>
 
       {/* 📄 Main Content */}
-      <main className="flex-1 overflow-auto bg-gradient-to-br from-slate-50 via-white to-slate-50 p-6">
-        {children}
+      <main className="flex-1 overflow-auto bg-white">
+        <div className="h-full">{children}</div>
       </main>
+
+      {/* 🤖 AI Agent Floating Button */}
+      <AIAgentFloatingButton />
     </div>
   );
 }

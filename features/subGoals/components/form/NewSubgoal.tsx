@@ -124,6 +124,7 @@ const NewSubGoalDialog: React.FC<Props> = ({ isOpen, setIsOpen, goal_id }) => {
           subgoal_id: subgoalId,
           goalName: null,
           subgoalName: subgoalName,
+          tags: [],
         };
 
         // Add to Zustand store

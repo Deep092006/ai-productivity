@@ -5,6 +5,24 @@ import {subgoalTable} from "@/features/subGoals/schema"
 import {habitTable} from "@/features/habits/schema"
 import { messagesTable } from "./schema/chat";
 import { attachmentTable } from "@/features/attachment/attachmentSchema";
+import { pomodoroTasks, pomodoroSessions } from "./schema/pomodoro";
+import { notes } from "./schema/notes";
+import {
+  projectsTable,
+  milestonesTable,
+  tasksTable,
+  projectMembersTable,
+  commentsTable,
+  chatMessagesTable,
+  attachmentsTable,
+  documentsTable,
+  notificationsTable,
+  activityFeedTable,
+  savedViewsTable,
+  userPreferencesTable,
+  approvalChainsTable,
+  resourceCapacityTable,
+} from "@/features/projects/schema";
 
 
 export {
@@ -14,5 +32,22 @@ export {
   subgoalTable,
   messagesTable,
   habitTable,
-  attachmentTable
+  attachmentTable,
+  pomodoroTasks,
+  pomodoroSessions,
+  notes,
+  projectsTable,
+  milestonesTable,
+  tasksTable,
+  projectMembersTable,
+  commentsTable,
+  chatMessagesTable,
+  attachmentsTable,
+  documentsTable,
+  notificationsTable,
+  activityFeedTable,
+  savedViewsTable,
+  userPreferencesTable,
+  approvalChainsTable,
+  resourceCapacityTable,
 }

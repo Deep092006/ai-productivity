@@ -183,6 +183,7 @@ const GenerateTasksWithAIDialog = ({
       subgoal_id: subgoalId,
       goalName: null,
       subgoalName,
+      tags: [],
     };
 
     // Add to Zustand store

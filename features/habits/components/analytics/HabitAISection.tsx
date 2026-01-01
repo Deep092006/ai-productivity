@@ -12,6 +12,7 @@ import { InsightCard } from "./InsightCard";
 import axios from "axios";
 import { API } from "@/lib/actions/getbackendurl";
 import { useHabit } from "@/features/habits/store";
+import { useHabitAIInsight } from "@/features/habits/aiInsightStore";
 
 // Type guard
 function isAISuggestionArray(data: unknown): data is AISuggestion[] {
@@ -31,47 +32,54 @@ function isAISuggestionArray(data: unknown): data is AISuggestion[] {
 const fadeItem = { hidden: { opacity: 0, y: 4 }, visible: { opacity: 1, y: 0 } };
 
 export default function HabitAISection() {
-  const [insights, setInsights] = useState<AISuggestion[]>([]);
-  const [loading, setLoading] = useState<boolean>(true); // start as true
   const [filter, setFilter] = useState<AISuggestion["type"] | "all">("all");
   const [selectedInsight, setSelectedInsight] = useState<AISuggestion | null>(null);
   const [showAll, setShowAll] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const { allHabits } = useHabit();
+  const { insights, loading, setInsights, setLoading, shouldFetch, clearCache } = useHabitAIInsight();
 
-  const fetchInsights = useCallback(async () => {
+  const fetchInsights = useCallback(async (force = false) => {
     if (!allHabits || allHabits.length === 0) {
       setInsights([]);
       setLoading(false);
       return;
     }
 
+    // Check if we need to fetch
+    if (!force && !shouldFetch()) {
+      console.log("[Habit AI] Using cached insights");
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     try {
-      const res = await axios.post(`${API}/api/content/generate/habit`, {
+      console.log("[Habit AI] Fetching fresh insights");
+      const res = await axios.post(`/api/content/generate/habit`, {
         habits: allHabits,
       });
 
       const suggestions = res.data;
 
       if (isAISuggestionArray(suggestions)) {
-       const withDates = suggestions.map((s) => ({
-  ...s,
-  createdAt: new Date().toISOString().split("T")[0], // ✅ string in YYYY-MM-DD
-}));
+        const withDates = suggestions.map((s) => ({
+          ...s,
+          createdAt: new Date().toISOString().split("T")[0],
+        }));
 
         setInsights(withDates);
       } else {
-        setInsights([]); // ← empty on invalid
+        setInsights([]);
       }
     } catch (err) {
-      console.error("Failed to fetch AI insights:", err);
-      setInsights([]); // ← empty on error
+      console.warn("AI insights unavailable:", err instanceof Error ? err.message : "Unknown error");
+      setInsights([]);
     } finally {
       setLoading(false);
     }
-  }, [allHabits]);
+  }, [allHabits, shouldFetch, setInsights, setLoading]);
 
   useEffect(() => {
     fetchInsights();
@@ -87,6 +95,11 @@ export default function HabitAISection() {
     () => (showAll ? filteredInsights : filteredInsights.slice(0, 4)),
     [filteredInsights, showAll]
   );
+
+  const handleRefresh = () => {
+    clearCache();
+    fetchInsights(true);
+  };
 
   // ✅ Show skeleton while loading (even on first load)
   if (loading) {
@@ -165,7 +178,7 @@ export default function HabitAISection() {
           </div>
 
           <button
-            onClick={fetchInsights}
+            onClick={handleRefresh}
             disabled={loading}
             className="p-1.5 text-slate-400 hover:text-slate-600 transition-colors"
             aria-label="Refresh insights"
@@ -209,9 +222,11 @@ export default function HabitAISection() {
       )}
 
       {/* Empty State */}
-      {filteredInsights.length === 0 && (
+      {filteredInsights.length === 0 && !loading && (
         <div className="py-8 text-center text-sm text-slate-400">
-          No AI insights available
+          {allHabits.length === 0 
+            ? "Add habits to get AI insights"
+            : "No AI insights available"}
         </div>
       )}
 

@@ -1,14 +1,17 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import {
-  CheckCircle2,
-  Flame,
   Plus,
-  Target,
-  TrendingUp,
+  MoreHorizontal,
+  Grid2X2,
+  List,
+  X,
+  ChevronDown,
+  Sparkles,
 } from "lucide-react";
+import { format } from "date-fns";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -26,31 +29,27 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
+import {
+  ResizablePanelGroup,
+  ResizablePanel,
+  ResizableHandle,
+} from "@/components/ui/resizable";
 import Loading from "@/components/Loading";
-import { StatCard } from "@/components/StateCard";
-
 import type { Habit, NewHabit } from "@/features/habits/schema";
 import { useIsMobile } from "@/hooks/use-mobile";
-
-import HabitAISection from "../analytics/HabitAISection";
-import HabitCard from "./HabitCard";
 import HabitForm, { type HabitFormValues } from "../form/HabitForm";
 import { generateUniqueId } from "@/lib/generateUniqueId";
 import useUser from "@/store/useUser";
 import { useHabit } from "@/features/habits/store";
-import { getAllUserHabits } from "@/features/habits/actions";
-import HabitQuickStats from "../analytics/HabitQuickStats";
-import GenerateHabitsWithAIDialog from "../form/GenerateHabitsWithAIDialog";
-import { newhabitaction } from "@/features/habits/actions";
+import { getAllUserHabits, newhabitaction } from "@/features/habits/actions";
+import HabitListPanel from "../HabitListPanel";
+import HabitOverviewPanel from "../HabitOverviewPanel";
 
 const HabitsDashboard = ({ user_id }: { user_id: string }) => {
   const {
     allHabits: habits,
     setHabits,
     addHabit,
-    updateHabit,
-    deleteHabit,
-    toggleCheckin,
   } = useHabit();
 
   const [isLoading, setIsLoading] = useState(true);
@@ -60,11 +59,20 @@ const HabitsDashboard = ({ user_id }: { user_id: string }) => {
   const isMobile = useIsMobile();
   const { user } = useUser();
 
+  // View state
+  const [viewMode, setViewMode] = useState<"grid" | "list">("list");
+  const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [dateFilter, setDateFilter] = useState<Date | null>(new Date());
+
   useEffect(() => {
     const fetchHabits = async () => {
       try {
-        const a = await getAllUserHabits(user_id) as Habit[]
-        setHabits(a)
+        const a = (await getAllUserHabits(user_id)) as Habit[];
+        setHabits(a);
+        if (a && a.length > 0) {
+          setSelectedHabit(a[0]);
+        }
       } catch (e) {
         setError("Failed to load habits.");
       } finally {
@@ -77,6 +85,16 @@ const HabitsDashboard = ({ user_id }: { user_id: string }) => {
       setIsLoading(false);
     }
   }, [user_id, setHabits]);
+
+  // Update selectedHabit when habits change
+  useEffect(() => {
+    if (selectedHabit) {
+      const updated = habits.find((h) => h.id === selectedHabit.id);
+      if (updated) {
+        setSelectedHabit(updated);
+      }
+    }
+  }, [habits, selectedHabit?.id]);
 
   const handleAddHabit = async (values: HabitFormValues) => {
     const newHabit: NewHabit = {
@@ -98,30 +116,6 @@ const HabitsDashboard = ({ user_id }: { user_id: string }) => {
     }
   };
 
-  const stats = {
-    totalHabits: habits.length,
-    completedToday: habits.filter(
-      (h) => h.checkInDays?.includes(new Date().toISOString().split("T")[0]),
-    ).length,
-    bestStreak: Math.max(0, ...habits.map((h) => h.highestStreak ?? 0)),
-    completionRate:
-      habits.length > 0
-        ? Math.round(
-            (habits.filter(
-              (h) =>
-                h.checkInDays?.includes(new Date().toISOString().split("T")[0]),
-            ).length /
-              habits.length) *
-              100,
-          )
-        : 0,
-  };
-
-  const getWeeklyProgress = (habit: Habit) => {
-    // Simplified logic, you might want something more sophisticated
-    return (habit.checkInDays?.length ?? 0) * 10;
-  };
-
   if (isLoading) {
     return <Loading message="Loading your habits..." />;
   }
@@ -131,97 +125,33 @@ const HabitsDashboard = ({ user_id }: { user_id: string }) => {
   }
 
   return (
-    <div className="flex-1 bg-slate-50/70 p-4 sm:p-6 md:p-8">
-      <div className="mx-auto max-w-7xl">
-        <header className="mb-8">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-slate-900">
-                Habit Tracker
-              </h1>
-              <p className="mt-1 text-sm text-slate-600">
-                Stay consistent and build better habits every day.
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="bg-white">
-                <span className="mr-2 h-2 w-2 rounded-full bg-green-500" />
-                {stats.completedToday}/{stats.totalHabits} today
-              </Badge>
-              <GenerateHabitsWithAIDialog />
-              <Button
-                onClick={() =>
-                  isMobile ? setDrawerOpen(true) : setDialogOpen(true)
-                }
-                className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
-              >
-                <Plus className="-ml-1 mr-2 h-4 w-4" />
-                New Habit
-              </Button>
-            </div>
-          </div>
-
-        
-          <HabitQuickStats  totalHabits={stats.totalHabits} 
-          completedToday={stats.completedToday}
-          bestStreak={stats.bestStreak}
-          completionRate={stats.completionRate}
+    <div className="h-full">
+      <ResizablePanelGroup direction="horizontal" className="h-full">
+        {/* Left Panel - Habit List */}
+        <ResizablePanel defaultSize={45} minSize={30}>
+          <HabitListPanel
+            habits={habits}
+            selectedHabit={selectedHabit}
+            selectedDate={selectedDate}
+            dateFilter={dateFilter}
+            viewMode={viewMode}
+            onHabitSelect={setSelectedHabit}
+            onDateSelect={setSelectedDate}
+            onDateFilterClear={() => setDateFilter(null)}
+            onViewModeChange={setViewMode}
+            onAddHabit={() => isMobile ? setDrawerOpen(true) : setDialogOpen(true)}
           />
-          
-        </header>
+        </ResizablePanel>
 
-        <main className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          <div className="space-y-8 lg:col-span-2">
-            <section>
-              <div className="mb-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <h2 className="text-xl font-semibold text-slate-800">
-                    Your Habits
-                  </h2>
-                  <span className="rounded-full bg-slate-200 px-2.5 py-0.5 text-xs font-medium text-slate-600">
-                    {habits.filter((h: Habit) => !h.checkInDays?.includes(new Date().toISOString().split('T')[0])).length} to track
-                    today
-                  </span>
-                </div>
-              </div>
+        <ResizableHandle className="w-px bg-gray-200 hover:bg-blue-400 transition-colors" />
 
-              {habits.length > 0 ? (
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  {habits.map((habit: Habit) => (
-                    <HabitCard
-                      key={habit.id}
-                      habit={habit}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-slate-200 bg-white p-12 text-center">
-                  <p className="text-sm font-medium text-slate-900">
-                    No habits yet!
-                  </p>
-                  <p className="mt-1 text-sm text-slate-500">
-                    Add a new habit to start your journey.
-                  </p>
-                  <Button
-                    size="sm"
-                    className="mt-4"
-                    onClick={() =>
-                      isMobile ? setDrawerOpen(true) : setDialogOpen(true)
-                    }
-                  >
-                    Add Habit
-                  </Button>
-                </div>
-              )}
-            </section>
-          </div>
+        {/* Right Panel - Habit Details / Analytics */}
+        <ResizablePanel defaultSize={55} minSize={35}>
+          <HabitOverviewPanel selectedHabit={selectedHabit} />
+        </ResizablePanel>
+      </ResizablePanelGroup>
 
-          <aside className="space-y-8">
-            <HabitAISection />
-          </aside>
-        </main>
-      </div>
-
+      {/* Mobile Drawer for adding habit */}
       {isMobile ? (
         <Drawer open={isDrawerOpen} onOpenChange={setDrawerOpen}>
           <DrawerContent>

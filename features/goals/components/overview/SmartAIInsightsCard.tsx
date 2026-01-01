@@ -22,6 +22,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import AIInsightsDialog from '../detail/AIInsightsDialog';
 import type { AIInsightResponse } from '@/features/goals/types';
+import { useGoalAIInsight } from '@/features/goals/aiInsightStore';
 
 interface SmartAIInsightsCardProps {
   goalId: number;
@@ -65,19 +66,37 @@ const SmartAIInsightsCard: React.FC<SmartAIInsightsCardProps> = ({
   subgoals,
   todos
 }) => {
-  const [insights, setInsights] = useState<AIInsightResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showAllRecommendations, setShowAllRecommendations] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
+  
+  const { 
+    insightsCache, 
+    loading: isLoading, 
+    setInsights, 
+    setLoading, 
+    shouldFetch, 
+    getInsights, 
+    clearCache 
+  } = useGoalAIInsight();
 
-  const fetchInsights = async () => {
+  const insights = getInsights(goalId);
+
+  const fetchInsights = async (force = false) => {
     if (!goal) return;
     
-    setIsLoading(true);
+    // Check if we need to fetch
+    if (!force && !shouldFetch(goalId)) {
+      console.log(`[Goal AI] Using cached insights for goal ${goalId}`);
+      setLoading(false);
+      return;
+    }
+    
+    setLoading(true);
     setError(null);
     
     try {
+      console.log(`[Goal AI] Fetching fresh insights for goal ${goalId}`);
       const response = await fetch('/api/goals/insights', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -93,12 +112,12 @@ const SmartAIInsightsCard: React.FC<SmartAIInsightsCardProps> = ({
       }
       
       const data = await response.json();
-      setInsights(data);
+      setInsights(goalId, data);
     } catch (error) {
       console.error('Failed to fetch AI insights:', error);
       setError(error instanceof Error ? error.message : 'Failed to load insights');
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -139,7 +158,8 @@ const SmartAIInsightsCard: React.FC<SmartAIInsightsCardProps> = ({
             size="sm"
             onClick={(e) => {
               e.stopPropagation();
-              fetchInsights();
+              clearCache(goalId);
+              fetchInsights(true);
             }}
             disabled={isLoading}
             className="h-8 px-3"

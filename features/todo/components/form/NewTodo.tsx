@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import BaseDialog from "@/components/BaseDialog";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,6 @@ import useUser from "@/store/useUser";
 import { newtodoaction } from "@/features/todo/actions";
 import type { NewTodo } from "@/features/todo/schema";
 import { Sparkles, FileText, Tag, Flag, Calendar, Target } from "lucide-react";
-import { log } from "console";
 
 interface NewTodoDialogProps {
   isOpen: boolean;
@@ -46,10 +45,23 @@ export default function NewTodoDialog({ isOpen, setIsOpen,defaultSubgoalId = nul
     },
   });
 
+  useEffect(() => {
+    if (isOpen) {
+      reset({
+        category: "Personal",
+        priority: "Low",
+        name: "",
+        description: "",
+        startDate: null,
+        endDate: null,
+        goal_id: defaultgoalId,
+        subgoal_id: defaultSubgoalId,
+      });
+    }
+  }, [isOpen, defaultgoalId, defaultSubgoalId, reset]);
+
   // Form Submit Handler
   const onSubmit = async (data: NewTodo) => {
-    console.log("data",data);
-   
     addTodo(data, userId ?? 0);
     reset();
     setIsOpen(false);
@@ -62,14 +74,15 @@ export default function NewTodoDialog({ isOpen, setIsOpen,defaultSubgoalId = nul
       setisOpen={setIsOpen}
       title="Create New Todo"
       description="Organize your tasks efficiently"
+      contentClassName="sm:max-w-lg"
     >
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 mt-4">
         
         {/* Task Name */}
         <div className="space-y-2">
           {/* Label */}
-          <Label htmlFor="name" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-blue-500" />
+          <Label htmlFor="name" className="text-sm font-medium text-gray-700 flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-gray-500" />
             Task Name *
           </Label>
           <Input
@@ -85,7 +98,7 @@ export default function NewTodoDialog({ isOpen, setIsOpen,defaultSubgoalId = nul
         {/* Description */}
         <div className="space-y-2">
           {/* Label */}
-          <Label htmlFor="description" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+          <Label htmlFor="description" className="text-sm font-medium text-gray-700 flex items-center gap-2">
             <FileText className="w-4 h-4 text-gray-500" />
             Description
           </Label>
@@ -100,8 +113,8 @@ export default function NewTodoDialog({ isOpen, setIsOpen,defaultSubgoalId = nul
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2 w-full">
             {/* Label */}
-            <Label htmlFor="category" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-              <Tag className="w-4 h-4 text-purple-500" />
+            <Label htmlFor="category" className="text-sm font-medium text-gray-700 flex items-center gap-2">
+              <Tag className="w-4 h-4 text-gray-500" />
               Category
             </Label>
             <SelectField<NewTodo>
@@ -112,8 +125,8 @@ export default function NewTodoDialog({ isOpen, setIsOpen,defaultSubgoalId = nul
           </div>
           <div className="space-y-2 w-full">
             {/* Label */}
-            <Label htmlFor="priority" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-              <Flag className="w-4 h-4 text-red-500" />
+            <Label htmlFor="priority" className="text-sm font-medium text-gray-700 flex items-center gap-2">
+              <Flag className="w-4 h-4 text-gray-500" />
               Priority
             </Label>
             <SelectField<NewTodo>
@@ -128,16 +141,16 @@ export default function NewTodoDialog({ isOpen, setIsOpen,defaultSubgoalId = nul
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             {/* Label */}
-            <Label htmlFor="startDate" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-green-500" />
+            <Label htmlFor="startDate" className="text-sm font-medium text-gray-700 flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-gray-500" />
               Start Date
             </Label>
             <DateField<NewTodo> name="startDate" control={control} />
           </div>
           <div className="space-y-2">
             {/* Label */}
-            <Label htmlFor="endDate" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-green-500" />
+            <Label htmlFor="endDate" className="text-sm font-medium text-gray-700 flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-gray-500" />
               End Date
             </Label>
             <DateField<NewTodo> name="endDate" control={control} />
@@ -148,7 +161,7 @@ export default function NewTodoDialog({ isOpen, setIsOpen,defaultSubgoalId = nul
         <Button
           type="submit"
           size="lg"
-          className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 w-full flex items-center justify-center"
+          className="w-full flex items-center justify-center"
         >
           <Target className="w-4 h-4 mr-2" />
           Create Task

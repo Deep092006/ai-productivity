@@ -65,11 +65,11 @@ export const updateTodosStatus = async (
 
 // update todo data
 export const updatetodoData = async (todo: Todo) => {
-  const { id, user_id, name, description, category, priority, startDate, endDate } = todo;
+  const { id, user_id, name, description, category, priority, startDate, endDate, tags } = todo;
   try {
     const updatedTodos = await db
       .update(todoTable)
-      .set({ name, description, category, priority, startDate, endDate })
+      .set({ name, description, category, priority, startDate, endDate, tags })
       .where(and(eq(todoTable.id, id), eq(todoTable.user_id, user_id)))
       .returning();
   } catch (error) {
